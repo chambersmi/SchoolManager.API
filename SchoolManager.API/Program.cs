@@ -16,6 +16,14 @@ namespace SchoolManager.API
 
             app.UseHttpsRedirection();
 
+            // CORS
+            app.UseCors(options =>
+            {
+                options.AllowAnyHeader();
+                options.AllowAnyOrigin();
+                options.AllowAnyMethod();
+            });
+
             app.UseAuthorization();
 
 
