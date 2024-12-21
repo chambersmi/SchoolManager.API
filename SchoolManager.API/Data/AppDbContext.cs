@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using SchoolManager.API.Data.DomainModels;
+using SchoolManager.API.Models.DomainModels;
 
 namespace SchoolManager.API.Data
 {

@@ -1,4 +1,4 @@
-﻿namespace SchoolManager.API.Data.DomainModels
+﻿namespace SchoolManager.API.Models.DomainModels
 {
     public class Student
     {
@@ -8,7 +8,6 @@
         public string? LastName { get; set; }
         public DateTime Birthdate { get; set; }
         public string? SSN { get; set; }
-
-        public ICollection<Address> Addresses { get; set; } = new List<Address>();
+        public ICollection<Address>? Addresses { get; set; }
     }
 }

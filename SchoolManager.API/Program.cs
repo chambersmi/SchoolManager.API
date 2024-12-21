@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolManager.API.Data;
+using SchoolManager.API.Services.Repositories;
 
 namespace SchoolManager.API
 {
@@ -20,6 +21,9 @@ namespace SchoolManager.API
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+            builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
