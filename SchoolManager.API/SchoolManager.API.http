@@ -1,6 +1,6 @@
 @SchoolManager.API_HostAddress = http://localhost:5071
 
-GET {{SchoolManager.API_HostAddress}}/weatherforecast/
+GET {{SchoolManager.API_HostAddress}}/swagger/
 Accept: application/json
 
 ###
