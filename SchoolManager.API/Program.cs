@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using SchoolManager.API.Data;
+
 namespace SchoolManager.API
 {
     public class Program
@@ -10,6 +13,12 @@ namespace SchoolManager.API
 
             builder.Services.AddControllers();
             builder.Services.AddSwaggerGen();
+
+            //MSSQL
+            builder.Services.AddDbContext<AppDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
 
             var app = builder.Build();
 
