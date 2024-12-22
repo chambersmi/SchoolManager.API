@@ -8,6 +8,6 @@
         public string? City { get; set; }
         public string? State { get; set; }
         public string? ZipCode { get; set; }
-        public ICollection<Student> Students { get; set; } = new List<Student>();
+        public ICollection<Student>? Students { get; set; }
     }
 }

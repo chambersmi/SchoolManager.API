@@ -10,6 +10,6 @@ namespace SchoolManager.API.Models.DTOs
         public string? City { get; set; }
         public string? State { get; set; }
         public string? ZipCode { get; set; }
-        public ICollection<StudentDTO> Students { get; set; } = new List<StudentDTO>();
+        public List<StudentDTO> Students { get; set; } = new List<StudentDTO>();
     }
 }

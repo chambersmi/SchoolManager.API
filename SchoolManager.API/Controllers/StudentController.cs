@@ -30,7 +30,7 @@ namespace SchoolManager.API.Controllers
                 response.Add(new StudentDTO
                 {
                     StudentID = st.StudentID,
-                    FirstName = st.FirstName,
+                    FirstName = st.FirstName,                    
                     Addresses = st.Addresses.Select(x => new AddressDTO
                     {
                         AddressID = x.AddressID,
