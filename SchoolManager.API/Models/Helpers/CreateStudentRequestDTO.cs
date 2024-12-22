@@ -1,4 +1,6 @@
-﻿namespace SchoolManager.API.Models.Helpers
+﻿using SchoolManager.API.Models.DomainModels;
+
+namespace SchoolManager.API.Models.Helpers
 {
     public class CreateStudentRequestDTO
     {
@@ -8,7 +10,6 @@
         public string? LastName { get; set; }
         public DateTime Birthdate { get; set; }
         public string? SSN { get; set; }
-
-        public int Addresses { get; set; }
+        public List<CreateAddressRequestDTO>? Addresses { get; set; }
     }
 }
