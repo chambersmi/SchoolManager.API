@@ -1,0 +1,30 @@
+<h1>Test</h1>
+<ng-container *ngIf="students$ | async as students">
+    <table class="table" class="table table-bordered mt-3">
+        <thead>
+            <tr>
+                <th scope="col">Student ID</th>
+                <th scope="col">First</th>
+                <th scope="col">Middle</th>
+                <th scope="col">Last</th>
+                <th scope="col">Birthdate</th>
+                <th scope="col">SSN</th>
+                <th scope="col">State</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let student of students">
+                
+                <th scope="row">{{student.studentID}}</th>
+                <th scope="row">{{student.firstName}}</th>
+                <th scope="row">{{student.middleName}}</th>
+                <th scope="row">{{student.lastName}}</th>
+                <th scope="row">{{student.birthdate}}</th>
+                <th scope="row">{{student.ssn}}</th>                
+         </tr>          
+        </tbody>
+        <ng-template #noDataFound>
+            No data found.
+        </ng-template>
+    </table>
+</ng-container>
