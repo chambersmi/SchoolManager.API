@@ -36,6 +36,7 @@ namespace SchoolManager.API.Controllers
                 {
                     StudentID = student.StudentID,
                     FirstName = student.FirstName,
+                    MiddleName = student.MiddleName,
                     LastName = student.LastName,
                     Birthdate = student.Birthdate,
                     SSN = student.SSN,
