@@ -45,6 +45,7 @@ namespace SchoolManager.API.Controllers
                         Street1 = x.Street1,
                         Street2 = x.Street2,
                         City = x.City,
+                        State = x.State,
                         ZipCode = x.ZipCode
                     }).ToList()
                 });
@@ -65,15 +66,25 @@ namespace SchoolManager.API.Controllers
                     LastName = request.LastName,
                     Birthdate = request.Birthdate,
                     SSN = request.SSN,
-                    Addresses = request.Addresses?.Select(a => new Address
-                    {
-                        Street1 = a.Street1,
-                        Street2 = a.Street2,
-                        City = a.City,
-                        State = a.State.ToUpper(),
-                        ZipCode = a.ZipCode
-                    }).ToList()
+                    Addresses = new List<Address>()
                 };
+
+                if(request.Addresses != null)
+                {
+                    foreach(var addressDto in request.Addresses)
+                    {
+                        var address = new Address
+                        {
+                            Street1 = addressDto.Street1,
+                            Street2 = addressDto.Street2,
+                            City = addressDto.City,
+                            State = addressDto.State,
+                            ZipCode = addressDto.ZipCode
+                        };
+
+                        student.Addresses.Add(address);
+                    }
+                }
 
                 await _studentRepository.CreateAsync(student);
 
@@ -97,6 +108,7 @@ namespace SchoolManager.API.Controllers
                     }).ToList()
                 };
                 return Ok(response);
+
             } else
             {
                 _logger.LogWarning("No address IDs provided in the request.");

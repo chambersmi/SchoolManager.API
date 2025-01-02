@@ -1,4 +1,6 @@
-﻿namespace SchoolManager.API.Models.Helpers
+﻿using SchoolManager.API.Models.DomainModels;
+
+namespace SchoolManager.API.Models.Helpers
 {
     public class CreateAddressRequestDTO
     {
