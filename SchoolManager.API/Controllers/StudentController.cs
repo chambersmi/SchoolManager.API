@@ -117,5 +117,10 @@ namespace SchoolManager.API.Controllers
             }
         }
 
+        public async Task<Student?> UpdateAsync(Student student)
+        {
+            
+        }
+
     }
 }
