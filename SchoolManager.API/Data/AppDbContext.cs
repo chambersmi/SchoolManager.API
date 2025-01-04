@@ -15,9 +15,18 @@ namespace SchoolManager.API.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Student>()
-                .HasMany(s => s.Addresses)
-                .WithMany(a => a.Students)
+                .HasMany(a => a.Addresses)
+                .WithMany(s => s.Students)
                 .UsingEntity(j => j.ToTable("StudentAddresses"));
+
+            modelBuilder.Entity<Student>()
+                .HasMany(a => a.Addresses)
+                .WithMany(s => s.Students)
+                .UsingEntity<Dictionary<string, object>>(
+                "StudentAddresses",
+                j => j.HasOne<Address>().WithMany().HasForeignKey("AddressID").OnDelete(DeleteBehavior.Cascade),
+                j => j.HasOne<Student>().WithMany().HasForeignKey("StudentID").OnDelete(DeleteBehavior.Cascade)
+                );
         }
     }
 }

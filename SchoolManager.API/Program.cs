@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolManager.API.Data;
+using SchoolManager.API.Services;
 using SchoolManager.API.Services.Repositories;
 
 namespace SchoolManager.API
@@ -23,7 +24,8 @@ namespace SchoolManager.API
 
             builder.Services.AddScoped<IStudentRepository, StudentRepository>();
             builder.Services.AddScoped<IAddressRepository, AddressRepository>();
-            
+            builder.Services.AddScoped<IStudentService, StudentService>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

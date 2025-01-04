@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using SchoolManager.API.Data;
 using SchoolManager.API.Models.DomainModels;
 
@@ -13,7 +14,7 @@ namespace SchoolManager.API.Services.Repositories
             _context = context;
         }
 
-        public async Task<Student> CreateAsync(Student student)
+        public async Task<Student> AddStudentAsync(Student student)
         {
             if(student == null)
             {
@@ -25,14 +26,29 @@ namespace SchoolManager.API.Services.Repositories
             return student;
         }
 
-        public async Task<IEnumerable<Student>> GetAllAsync()
+        public async Task<IEnumerable<Student>> GetAllStudentsAsync()
         {
             return await _context.Students.Include(a => a.Addresses).ToListAsync();
         }
 
-        public async Task<Student?> GetByIdAsync(int id)
+        public async Task<Student?> GetStudentByIdAsync(int id)
         {
             return await _context.Students.Include(a => a.Addresses).FirstOrDefaultAsync(x => x.StudentID == id);
+        }
+
+        public async Task<bool> DeleteStudentByIdAsync(int id)
+        {
+            var student = await _context.Students.Include(a => a.Addresses).FirstOrDefaultAsync(s => s.StudentID == id);
+
+            if(student == null)
+            {
+                return false;
+            }
+
+            _context.Remove(student);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task<Student?> UpdateAsync(Student student)
