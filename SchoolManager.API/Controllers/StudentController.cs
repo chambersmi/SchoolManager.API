@@ -70,9 +70,9 @@ namespace SchoolManager.API.Controllers
                     Addresses = new List<Address>()
                 };
 
-                if(request.Addresses != null)
+                if (request.Addresses != null)
                 {
-                    foreach(var addressDto in request.Addresses)
+                    foreach (var addressDto in request.Addresses)
                     {
                         var address = new Address
                         {
@@ -117,10 +117,67 @@ namespace SchoolManager.API.Controllers
             }
         }
 
-        public async Task<Student?> UpdateAsync(Student student)
-        {
-            
-        }
+        [HttpPut]
+        [Route("{id:int}")]
+        public async Task<IActionResult> EditStudent([FromRoute] int id, UpdateStudentRequestDTO request)
+        {            
+            var student = new Student
+            {
+                StudentID = id,
+                FirstName = request.FirstName,
+                MiddleName = request.MiddleName,
+                LastName = request.LastName,
+                Birthdate = request.Birthdate,
+                SSN = request.SSN
+            };
 
+            if (request.Addresses != null)
+            {
+                if(student.Addresses == null)
+                {
+                    student.Addresses = new List<Address>();
+                }
+                foreach(var addressDTO in request.Addresses)
+                {
+                    var address = new Address
+                    {
+                        Street1 = addressDTO.Street1,
+                        Street2 = addressDTO.Street2,
+                        City = addressDTO.City,
+                        State = addressDTO.State,
+                        ZipCode = addressDTO.ZipCode
+                    };
+                    student.Addresses.Add(address);
+                }
+            }
+
+            if(student == null)
+            {
+                return NotFound();
+            }
+
+            await _studentRepository.UpdateAsync(student);
+
+            var response = new StudentDTO
+            {
+                StudentID = student.StudentID,
+                FirstName = student.FirstName,
+                MiddleName = student.MiddleName,
+                LastName = student.LastName,
+                SSN = student.SSN,
+                Birthdate = student.Birthdate,
+                Addresses = student.Addresses?.Select(address => new AddressDTO
+                {
+                    Street1 = address.Street1,
+                    Street2 = address.Street2,
+                    City = address.City,
+                    State = address.State,
+                    ZipCode = address.ZipCode
+                }).ToList() ?? new List<AddressDTO>()
+            
+            };
+
+            return Ok(response);
+        }
     }
 }

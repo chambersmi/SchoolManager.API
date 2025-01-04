@@ -7,6 +7,7 @@ namespace SchoolManager.API.Services.Repositories
         Task<Student> CreateAsync(Student student);
         Task<IEnumerable<Student>> GetAllAsync();
         Task<Student?> GetByIdAsync(int id);
+        Task<Student?> UpdateAsync(Student student);
 
     }
 }
