@@ -11,13 +11,13 @@ namespace SchoolManager.API.Services
     {
         private readonly IStudentRepository _studentRepository;
         private readonly IStudentWithAddressRepository _studentAddressRepository;
-        private readonly IAddressRepository _addressRepository;
+        private readonly IAddressService _addressService;
 
-        public StudentService(IStudentRepository studentRepository, IStudentWithAddressRepository studentAddressRepository, IAddressRepository addressRepository)
+        public StudentService(IStudentRepository studentRepository, IStudentWithAddressRepository studentAddressRepository, IAddressService addressService)
         {
             _studentRepository = studentRepository;
             _studentAddressRepository = studentAddressRepository;
-            _addressRepository = addressRepository;
+            _addressService = addressService;
         }
 
         public async Task<int> AddStudentAsync(CreateStudentRequestDTO dto)
@@ -76,7 +76,7 @@ namespace SchoolManager.API.Services
             return await _studentRepository.DeleteStudentByIdAsync(studentId);
         }
 
-        public async Task AddStudentWithAddressAsync(StudentDTO studentDTO, AddressDTO addressDTO)
+        public async Task AddStudentWithAddressAsync(CreateStudentRequestDTO studentDTO, CreateAddressRequestDTO addressDTO)
         {
             var student = new Student
             {
@@ -87,17 +87,11 @@ namespace SchoolManager.API.Services
                 SSN = studentDTO.SSN
             };
 
-            var address = new Address
-            {
-                Street1 = addressDTO.Street1,
-                Street2 = addressDTO.Street2,
-                City = addressDTO.City,
-                State = addressDTO.State,
-                ZipCode = addressDTO.ZipCode
-            };
-
+            // Add student
             await _studentRepository.AddStudentAsync(student);
-            await _addressRepository.AddAddressAsync(address);
+
+            // Add address
+            var address = await _addressService.GetOrCreateAddressAsync(addressDTO);
 
             var studentAddress = new StudentAddress
             {

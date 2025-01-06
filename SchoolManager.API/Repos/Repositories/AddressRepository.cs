@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SchoolManager.API.Data;
 using SchoolManager.API.Models.DomainModels;
+using SchoolManager.API.Models.DTOs;
+using SchoolManager.API.Models.Helpers;
 using System.Reflection.Metadata.Ecma335;
 
 namespace SchoolManager.API.Services.Repositories
@@ -50,6 +52,16 @@ namespace SchoolManager.API.Services.Repositories
             await _context.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<Address?> GetByFieldsAsync(CreateAddressRequestDTO request)
+        {
+            return await _context.Addresses.FirstOrDefaultAsync(a =>
+                a.Street1 == request.Street1 &&
+                a.Street2 == request.Street2 &&
+                a.City == request.City &&
+                a.State == request.Street2 &&
+                a.ZipCode == request.ZipCode);
         }
 
     }

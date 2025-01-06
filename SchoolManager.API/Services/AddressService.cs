@@ -1,5 +1,6 @@
 ﻿using SchoolManager.API.Models.DomainModels;
 using SchoolManager.API.Models.DTOs;
+using SchoolManager.API.Models.Helpers;
 using SchoolManager.API.Services.Repositories;
 
 namespace SchoolManager.API.Services
@@ -12,7 +13,7 @@ namespace SchoolManager.API.Services
             _addressRepository = addressRepository;
         }
 
-        public async Task<int> AddAddressAsync(AddressDTO dto)
+        public async Task<int> AddAddressAsync(CreateAddressRequestDTO dto)
         {
             var address = new Address
             {
@@ -64,6 +65,27 @@ namespace SchoolManager.API.Services
                 State = address.State,
                 ZipCode = address.ZipCode
             }).ToList();
+        }
+
+        public async Task<Address> GetOrCreateAddressAsync(CreateAddressRequestDTO request)
+        {
+            var existingAddress = await _addressRepository.GetByFieldsAsync(request);
+
+            if(existingAddress != null)
+            {
+                return existingAddress;
+            }
+
+            var createAddress = new Address
+            {
+                Street1 = request.Street1,
+                Street2 = request.Street2,
+                City = request.City,
+                State = request.State,
+                ZipCode = request.ZipCode
+            };
+
+            return await _addressRepository.AddAddressAsync(createAddress);
         }
     }
 }
