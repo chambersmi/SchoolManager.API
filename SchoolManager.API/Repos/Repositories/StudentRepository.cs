@@ -68,6 +68,7 @@ namespace SchoolManager.API.Services.Repositories
             {
                 var isAddressUsedByOthers = await _context.StudentAddresses.AnyAsync(sa => sa.AddressID == studentAddress.AddressID && sa.StudentID != studentId);
 
+                //Is this needed?
                 if(!isAddressUsedByOthers && studentAddress.Address != null)
                 {
                     _context.Addresses.Remove(studentAddress.Address);

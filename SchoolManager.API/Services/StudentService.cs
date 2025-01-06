@@ -20,7 +20,7 @@ namespace SchoolManager.API.Services
             _addressRepository = addressRepository;
         }
 
-        public async Task<int> AddStudentAsync(StudentDTO dto)
+        public async Task<int> AddStudentAsync(CreateStudentRequestDTO dto)
         {
             var student = new Student
             {

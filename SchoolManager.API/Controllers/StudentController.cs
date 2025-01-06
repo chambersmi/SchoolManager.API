@@ -36,7 +36,7 @@ namespace SchoolManager.API.Controllers
 
         // change create studentdto?
         [HttpPost]
-        public async Task<IActionResult> AddStudentAsync([FromBody] StudentDTO request)
+        public async Task<IActionResult> AddStudentAsync([FromBody] CreateStudentRequestDTO request)
         {
             if (request == null)
             {
