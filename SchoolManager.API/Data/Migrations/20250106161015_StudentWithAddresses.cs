@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SchoolManager.API.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class StudentAddressRelationship : Migration
+    public partial class StudentWithAddresses : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -49,30 +49,30 @@ namespace SchoolManager.API.Data.Migrations
                 name: "StudentAddresses",
                 columns: table => new
                 {
-                    AddressesAddressID = table.Column<int>(type: "int", nullable: false),
-                    StudentsStudentID = table.Column<int>(type: "int", nullable: false)
+                    StudentID = table.Column<int>(type: "int", nullable: false),
+                    AddressID = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StudentAddresses", x => new { x.AddressesAddressID, x.StudentsStudentID });
+                    table.PrimaryKey("PK_StudentAddresses", x => new { x.StudentID, x.AddressID });
                     table.ForeignKey(
-                        name: "FK_StudentAddresses_Addresses_AddressesAddressID",
-                        column: x => x.AddressesAddressID,
+                        name: "FK_StudentAddresses_Addresses_AddressID",
+                        column: x => x.AddressID,
                         principalTable: "Addresses",
                         principalColumn: "AddressID",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_StudentAddresses_Students_StudentsStudentID",
-                        column: x => x.StudentsStudentID,
+                        name: "FK_StudentAddresses_Students_StudentID",
+                        column: x => x.StudentID,
                         principalTable: "Students",
                         principalColumn: "StudentID",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_StudentAddresses_StudentsStudentID",
+                name: "IX_StudentAddresses_AddressID",
                 table: "StudentAddresses",
-                column: "StudentsStudentID");
+                column: "AddressID");
         }
 
         /// <inheritdoc />

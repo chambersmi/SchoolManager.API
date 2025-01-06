@@ -9,24 +9,25 @@ namespace SchoolManager.API.Data
         {
         }
 
-        public DbSet<Student> Students { get; set; } = null!;
-        public DbSet<Address> Addresses { get; set; } = null!;
+        public DbSet<Student> Students { get; set; }
+        public DbSet<Address> Addresses { get; set; }
+        public DbSet<StudentAddress> StudentAddresses { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Student>()
-                .HasMany(a => a.Addresses)
-                .WithMany(s => s.Students)
-                .UsingEntity(j => j.ToTable("StudentAddresses"));
+            modelBuilder.Entity<StudentAddress>()
+                .HasKey(sa => new { sa.StudentID, sa.AddressID });
 
-            modelBuilder.Entity<Student>()
-                .HasMany(a => a.Addresses)
-                .WithMany(s => s.Students)
-                .UsingEntity<Dictionary<string, object>>(
-                "StudentAddresses",
-                j => j.HasOne<Address>().WithMany().HasForeignKey("AddressID").OnDelete(DeleteBehavior.Cascade),
-                j => j.HasOne<Student>().WithMany().HasForeignKey("StudentID").OnDelete(DeleteBehavior.Cascade)
-                );
+            // Define relationships
+            modelBuilder.Entity<StudentAddress>()
+                .HasOne(sa => sa.Student)
+                .WithMany(s => s.StudentAddresses)
+                .HasForeignKey(sa => sa.StudentID);
+
+            modelBuilder.Entity<StudentAddress>()
+                .HasOne(sa => sa.Address)
+                .WithMany(a => a.StudentAddresses)
+                .HasForeignKey(sa => sa.AddressID);                
         }
     }
 }

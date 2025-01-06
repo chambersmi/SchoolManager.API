@@ -12,7 +12,8 @@ namespace SchoolManager.API.Models.DomainModels
         public string? State { get; set; }
 
         public string? ZipCode { get; set; }
-        public ICollection<Student>? Students { get; set; }
+        //public ICollection<Student>? Students { get; set; } = new List<Student>();
+        public ICollection<StudentAddress> StudentAddresses { get; set; } = new List<StudentAddress>();
 
 
     }

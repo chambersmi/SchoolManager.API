@@ -8,6 +8,8 @@ namespace SchoolManager.API.Services
         Task<int> AddStudentAsync(StudentDTO dto);
         Task<IEnumerable<StudentDTO>> GetAllStudentsAsync();
         Task<StudentDTO> GetStudentByIdAsync(int id);
-        Task<bool> DeleteStudentByIdAsync(int id);        
+        Task<bool> DeleteStudentByIdAsync(int studentId);
+        Task AddStudentWithAddressAsync(StudentDTO studentDTO, AddressDTO addressDTO);
+        Task<IEnumerable<StudentDTO>> GetAllStudentsWithAddressesAsync();
     }
 }

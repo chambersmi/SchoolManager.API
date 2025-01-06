@@ -2,6 +2,7 @@
 using SchoolManager.API.Models.DomainModels;
 using SchoolManager.API.Models.DTOs;
 using SchoolManager.API.Models.Helpers;
+using SchoolManager.API.Repos.Repositories;
 using SchoolManager.API.Services.Repositories;
 
 namespace SchoolManager.API.Services
@@ -9,10 +10,14 @@ namespace SchoolManager.API.Services
     public class StudentService : IStudentService
     {
         private readonly IStudentRepository _studentRepository;
+        private readonly IStudentWithAddressRepository _studentAddressRepository;
+        private readonly IAddressRepository _addressRepository;
 
-        public StudentService(IStudentRepository studentRepository)
+        public StudentService(IStudentRepository studentRepository, IStudentWithAddressRepository studentAddressRepository, IAddressRepository addressRepository)
         {
             _studentRepository = studentRepository;
+            _studentAddressRepository = studentAddressRepository;
+            _addressRepository = addressRepository;
         }
 
         public async Task<int> AddStudentAsync(StudentDTO dto)
@@ -62,13 +67,74 @@ namespace SchoolManager.API.Services
                 };
             } else
             {
-                return null;
+                return new StudentDTO();
             }
         }
 
-        public async Task<bool> DeleteStudentByIdAsync(int id)
+        public async Task<bool> DeleteStudentByIdAsync(int studentId)
         {
-            return await _studentRepository.DeleteStudentByIdAsync(id);
+            return await _studentRepository.DeleteStudentByIdAsync(studentId);
+        }
+
+        public async Task AddStudentWithAddressAsync(StudentDTO studentDTO, AddressDTO addressDTO)
+        {
+            var student = new Student
+            {
+                FirstName = studentDTO.FirstName,
+                MiddleName = studentDTO.MiddleName,
+                LastName = studentDTO.LastName,
+                Birthdate = studentDTO.Birthdate,
+                SSN = studentDTO.SSN
+            };
+
+            var address = new Address
+            {
+                Street1 = addressDTO.Street1,
+                Street2 = addressDTO.Street2,
+                City = addressDTO.City,
+                State = addressDTO.State,
+                ZipCode = addressDTO.ZipCode
+            };
+
+            await _studentRepository.AddStudentAsync(student);
+            await _addressRepository.AddAddressAsync(address);
+
+            var studentAddress = new StudentAddress
+            {
+                StudentID = student.StudentID,
+                AddressID = address.AddressID
+            };
+
+            await _studentAddressRepository.AddStudentWithAddressAsync(studentAddress);
+        }
+
+        public async Task<IEnumerable<StudentDTO>> GetAllStudentsWithAddressesAsync()
+        {
+            var studentsWithAddresses = await _studentRepository.GetAllStudentsWithAddressesAsync();
+
+            var studentDTO = studentsWithAddresses.Select(student => new StudentDTO
+            {
+                StudentID = student.StudentID,
+                FirstName = student.FirstName,
+                MiddleName = student.MiddleName,
+                LastName = student.LastName,
+                Birthdate = student.Birthdate,
+                SSN = student.SSN,
+                Addresses = student.StudentAddresses
+                .Where(sa => sa.Address != null)
+                .Select(sa => new AddressDTO
+                {
+                    AddressID = sa.Address?.AddressID ?? 0,
+                    Street1 = sa.Address?.Street1 ?? string.Empty,
+                    Street2 = sa.Address?.Street2,
+                    City = sa.Address?.City ?? string.Empty,
+                    State = sa.Address?.State ?? string.Empty,
+                    ZipCode = sa.Address?.ZipCode ?? string.Empty
+                }).ToList()
+            }).ToList();
+
+            return studentDTO;
+
         }
 
     }

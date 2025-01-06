@@ -8,10 +8,12 @@ namespace SchoolManager.API.Services.Repositories
     public class StudentRepository : IStudentRepository
     {
         private readonly AppDbContext _context;
+        private readonly ILogger<StudentRepository> _logger;
 
-        public StudentRepository(AppDbContext context)
+        public StudentRepository(AppDbContext context, ILogger<StudentRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<Student> AddStudentAsync(Student student)
@@ -31,34 +33,58 @@ namespace SchoolManager.API.Services.Repositories
             return await _context.Students.ToListAsync();
         }
 
-        public async Task<IEnumerable<Student>> GetAllStudentsWithAddressAsync()
+        public async Task<IEnumerable<Student>> GetAllStudentsWithAddressesAsync()
         {
-            return await _context.Students.Include(a => a.Addresses).ToListAsync();
+            var studentsWithAddresses = await _context.Students.Include(s => s.StudentAddresses).ThenInclude(sa => sa.Address).ToListAsync();
+
+            if(studentsWithAddresses == null)
+            {
+                return Enumerable.Empty<Student>();
+            }
+
+            return studentsWithAddresses;
         }
 
         public async Task<Student?> GetStudentByIdAsync(int id)
         {
-            return await _context.Students.Include(a => a.Addresses).FirstOrDefaultAsync(x => x.StudentID == id);
+            return await _context.Students.FirstOrDefaultAsync(x => x.StudentID == id);
         }
 
-        public async Task<bool> DeleteStudentByIdAsync(int id)
+        public async Task<bool> DeleteStudentByIdAsync(int studentId)
         {
-            var student = await _context.Students.Include(a => a.Addresses).FirstOrDefaultAsync(s => s.StudentID == id);
+            // Find the student along with their associated addresses via the StudentAddresses join table
+            var student = await _context.Students
+                .Include(s => s.StudentAddresses)  // Include the related StudentAddresses
+                .ThenInclude(sa => sa.Address)     // Then include the related Address
+                .FirstOrDefaultAsync(s => s.StudentID == studentId); // Filter by student ID
 
             if(student == null)
             {
                 return false;
             }
 
-            _context.Remove(student);
-            await _context.SaveChangesAsync();
+            // Remove all StudentAddresses entries and associated addresses
+            foreach(var studentAddress in student.StudentAddresses)
+            {
+                var isAddressUsedByOthers = await _context.StudentAddresses.AnyAsync(sa => sa.AddressID == studentAddress.AddressID && sa.StudentID != studentId);
 
+                if(!isAddressUsedByOthers && studentAddress.Address != null)
+                {
+                    _context.Addresses.Remove(studentAddress.Address);
+                }
+
+                _context.StudentAddresses.Remove(studentAddress);
+            }
+
+            _context.Students.Remove(student);
+            await _context.SaveChangesAsync();
+            
             return true;
         }
 
         public async Task<Student?> UpdateAsync(Student student)
         {
-            var existingStudent = await _context.Students.Include(x => x.Addresses).FirstOrDefaultAsync(x => x.StudentID == student.StudentID);
+            var existingStudent = await _context.Students.FirstOrDefaultAsync(x => x.StudentID == student.StudentID);
 
             if (existingStudent != null)
             {
@@ -69,18 +95,6 @@ namespace SchoolManager.API.Services.Repositories
             }
 
             return null;
-        }
-
-        public async Task JoinStudentToAddressAsync(int studentId, int addressId)
-        {
-            var student = await _context.Students.FindAsync(studentId);
-            var address = await _context.Addresses.FindAsync(addressId);
-
-            if(student != null && address != null)
-            {
-                student.Addresses.Add(address);
-                await _context.SaveChangesAsync();
-            }
         }
     }
 }

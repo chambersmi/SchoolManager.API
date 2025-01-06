@@ -11,6 +11,7 @@ namespace SchoolManager.API.Models.DomainModels
         [DisplayFormat(DataFormatString = "{0:MM-dd-yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Birthdate { get; set; }
         public string? SSN { get; set; }
-        public ICollection<Address>? Addresses { get; set; }
+        //public ICollection<Address>? Addresses { get; set; } = new List<Address>();
+        public ICollection<StudentAddress> StudentAddresses { get; set; } = new List<StudentAddress>();
     }
 }

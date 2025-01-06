@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolManager.API.Data;
+using SchoolManager.API.Repos.Repositories;
 using SchoolManager.API.Services;
 using SchoolManager.API.Services.Repositories;
 
@@ -19,11 +20,12 @@ namespace SchoolManager.API
             //MSSQL
             builder.Services.AddDbContext<AppDbContext>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")).LogTo(Console.WriteLine, LogLevel.Information);
             });
 
             builder.Services.AddScoped<IStudentRepository, StudentRepository>();
             builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+            builder.Services.AddScoped<IStudentWithAddressRepository, StudentWithAddressRepository>();
 
             builder.Services.AddScoped<IStudentService, StudentService>();
             builder.Services.AddScoped<IAddressService, AddressService>();

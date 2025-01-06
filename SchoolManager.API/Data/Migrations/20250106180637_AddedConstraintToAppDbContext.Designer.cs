@@ -12,8 +12,8 @@ using SchoolManager.API.Data;
 namespace SchoolManager.API.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241222151253_StudentAddressRelationship")]
-    partial class StudentAddressRelationship
+    [Migration("20250106180637_AddedConstraintToAppDbContext")]
+    partial class AddedConstraintToAppDbContext
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,21 +24,6 @@ namespace SchoolManager.API.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("AddressStudent", b =>
-                {
-                    b.Property<int>("AddressesAddressID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("StudentsStudentID")
-                        .HasColumnType("int");
-
-                    b.HasKey("AddressesAddressID", "StudentsStudentID");
-
-                    b.HasIndex("StudentsStudentID");
-
-                    b.ToTable("StudentAddresses", (string)null);
-                });
 
             modelBuilder.Entity("SchoolManager.API.Models.DomainModels.Address", b =>
                 {
@@ -96,19 +81,50 @@ namespace SchoolManager.API.Data.Migrations
                     b.ToTable("Students");
                 });
 
-            modelBuilder.Entity("AddressStudent", b =>
+            modelBuilder.Entity("SchoolManager.API.Models.DomainModels.StudentAddress", b =>
                 {
-                    b.HasOne("SchoolManager.API.Models.DomainModels.Address", null)
-                        .WithMany()
-                        .HasForeignKey("AddressesAddressID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<int>("StudentID")
+                        .HasColumnType("int");
 
-                    b.HasOne("SchoolManager.API.Models.DomainModels.Student", null)
-                        .WithMany()
-                        .HasForeignKey("StudentsStudentID")
+                    b.Property<int>("AddressID")
+                        .HasColumnType("int");
+
+                    b.HasKey("StudentID", "AddressID");
+
+                    b.HasIndex("AddressID");
+
+                    b.ToTable("StudentAddresses");
+                });
+
+            modelBuilder.Entity("SchoolManager.API.Models.DomainModels.StudentAddress", b =>
+                {
+                    b.HasOne("SchoolManager.API.Models.DomainModels.Address", "Address")
+                        .WithMany("StudentAddresses")
+                        .HasForeignKey("AddressID")
                         .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_StudentAddresses_Addresses_AddressID");
+
+                    b.HasOne("SchoolManager.API.Models.DomainModels.Student", "Student")
+                        .WithMany("StudentAddresses")
+                        .HasForeignKey("StudentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK_StudentAddresses_Students_StudentID");
+
+                    b.Navigation("Address");
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("SchoolManager.API.Models.DomainModels.Address", b =>
+                {
+                    b.Navigation("StudentAddresses");
+                });
+
+            modelBuilder.Entity("SchoolManager.API.Models.DomainModels.Student", b =>
+                {
+                    b.Navigation("StudentAddresses");
                 });
 #pragma warning restore 612, 618
         }

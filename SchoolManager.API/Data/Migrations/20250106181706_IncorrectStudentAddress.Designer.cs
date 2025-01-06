@@ -12,8 +12,8 @@ using SchoolManager.API.Data;
 namespace SchoolManager.API.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250104190509_AddedOnDeleteToModelBuilder")]
-    partial class AddedOnDeleteToModelBuilder
+    [Migration("20250106181706_IncorrectStudentAddress")]
+    partial class IncorrectStudentAddress
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -81,34 +81,48 @@ namespace SchoolManager.API.Data.Migrations
                     b.ToTable("Students");
                 });
 
-            modelBuilder.Entity("StudentAddresses", b =>
+            modelBuilder.Entity("SchoolManager.API.Models.DomainModels.StudentAddress", b =>
                 {
-                    b.Property<int>("AddressID")
-                        .HasColumnType("int");
-
                     b.Property<int>("StudentID")
                         .HasColumnType("int");
 
-                    b.HasKey("AddressID", "StudentID");
+                    b.Property<int>("AddressID")
+                        .HasColumnType("int");
 
-                    b.HasIndex("StudentID");
+                    b.HasKey("StudentID", "AddressID");
+
+                    b.HasIndex("AddressID");
 
                     b.ToTable("StudentAddresses");
                 });
 
-            modelBuilder.Entity("StudentAddresses", b =>
+            modelBuilder.Entity("SchoolManager.API.Models.DomainModels.StudentAddress", b =>
                 {
-                    b.HasOne("SchoolManager.API.Models.DomainModels.Address", null)
-                        .WithMany()
+                    b.HasOne("SchoolManager.API.Models.DomainModels.Address", "Address")
+                        .WithMany("StudentAddresses")
                         .HasForeignKey("AddressID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SchoolManager.API.Models.DomainModels.Student", null)
-                        .WithMany()
+                    b.HasOne("SchoolManager.API.Models.DomainModels.Student", "Student")
+                        .WithMany("StudentAddresses")
                         .HasForeignKey("StudentID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Address");
+
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("SchoolManager.API.Models.DomainModels.Address", b =>
+                {
+                    b.Navigation("StudentAddresses");
+                });
+
+            modelBuilder.Entity("SchoolManager.API.Models.DomainModels.Student", b =>
+                {
+                    b.Navigation("StudentAddresses");
                 });
 #pragma warning restore 612, 618
         }

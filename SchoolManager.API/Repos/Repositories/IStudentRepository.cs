@@ -9,7 +9,8 @@ namespace SchoolManager.API.Services.Repositories
         Task<IEnumerable<Student>> GetAllStudentsAsync();
         Task<Student?> GetStudentByIdAsync(int id);
         Task<Student?> UpdateAsync(Student student);
-        Task<bool> DeleteStudentByIdAsync(int id);
-        Task JoinStudentToAddressAsync(int studentId, int addressId);
+        //Task<bool> DeleteStudentByIdAsync(int id);
+        Task<IEnumerable<Student>> GetAllStudentsWithAddressesAsync();
+        Task<bool> DeleteStudentByIdAsync(int studentId);
     }
 }

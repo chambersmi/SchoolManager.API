@@ -1,5 +1,6 @@
 ﻿using Azure;
 using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SchoolManager.API.Models.DomainModels;
 using SchoolManager.API.Models.DTOs;
@@ -16,6 +17,7 @@ namespace SchoolManager.API.Controllers
     {
         private readonly IStudentService _studentService;
         private readonly IAddressService _addressService;
+
         private readonly ILogger<StudentController> _logger;
 
         public StudentController(IStudentService studentService, IAddressService addressService, ILogger<StudentController> logger)
@@ -36,12 +38,12 @@ namespace SchoolManager.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddStudentAsync([FromBody] StudentDTO request)
         {
-           if(request == null)
-           {
+            if (request == null)
+            {
                 return BadRequest("Request cannot be null.");
-           }
+            }
 
-           try
+            try
             {
                 var studentId = await _studentService.AddStudentAsync(request);
                 return Ok(new
@@ -50,8 +52,7 @@ namespace SchoolManager.API.Controllers
                     Message = "Student Created Successfully.",
                     StudentId = studentId
                 });
-            }
-            catch (Exception ex)
+            } catch (Exception ex)
             {
                 return StatusCode(500, new
                 {
@@ -66,7 +67,7 @@ namespace SchoolManager.API.Controllers
         public async Task<IActionResult> GetStudentByIdAsync(int id)
         {
             var student = await _studentService.GetStudentByIdAsync(id);
-            if(student == null)
+            if (student == null)
             {
                 return NotFound(new
                 {
@@ -78,43 +79,83 @@ namespace SchoolManager.API.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeletestudentByIdAsync(int id)
-        {
-            var student = await _studentService.DeleteStudentByIdAsync(id);
-            return Ok(student);
+        public async Task<IActionResult> DeleteStudentByIdAsync(int studentId)
+        {            
+            try
+            {
+                var isDeleted = await _studentService.DeleteStudentByIdAsync(studentId);
+
+                if(!isDeleted)
+                {
+                    return NotFound(new
+                    {
+                        Message = "Student or associated address not found.",
+                        StudentID = studentId
+                    });
+                }
+                return Ok(new
+                {
+                    Message = "Student Deleted Successfully.",
+                    StudentID = studentId
+                });
+            } catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    Message = "An error has occured while deleting the student.",
+                    ErrorDetails = ex.Message,
+                    StackTrace = ex.StackTrace
+                });
+            }
         }
 
         [HttpPost]
-        [Route("CreateStudentWithAddress")]
-        public async Task<IActionResult> CreateStudentWithAddressAsync([FromBody] CreateStudentRequestDTO request)
+        [Route("AddStudentWithAddress")]
+        public async Task<IActionResult> CreateStudentWithAddressAsync([FromBody] AddStudentWithAddressDTO request)
         {
-            var address = new AddressDTO
+            if (request == null)
             {
-                Street1 = request.Address.Street1,
-                Street2 = request.Address.Street2,
-                City = request.Address.City,
-                State = request.Address.State,
-                ZipCode = request.Address.ZipCode
-            };
+                return BadRequest("Invalid request.");
+            }
 
-            var addressId = await _addressService.AddAddressAsync(address);
-
-            var student = new StudentDTO
-            {
-                FirstName = request.FirstName,
-                MiddleName = request.MiddleName,
-                LastName = request.LastName,
-                Birthdate = request.Birthdate,
-                SSN = request.SSN
-            };
-
-            var studentId = _studentService.AddStudentAsync(student);
+            await _studentService.AddStudentWithAddressAsync(
+                new StudentDTO
+                {
+                    FirstName = request.FirstName,
+                    MiddleName = request.MiddleName,
+                    LastName = request.LastName,
+                    Birthdate = request.Birthdate,
+                    SSN = request.SSN
+                },
+                new AddressDTO
+                {
+                    Street1 = request.Street1,
+                    Street2 = request.Street2,
+                    City = request.City,
+                    State = request.State,
+                    ZipCode = request.ZipCode
+                });
 
             return Ok(new
             {
-                StudentID = studentId,
-                AddressID = addressId
+                Message = "Student and Address successfully added."
             });
+        }
+
+        [HttpGet("StudentsWithAddresses")]
+        public async Task<IActionResult> GetAllStudentsWithAddresses()
+        {
+            var students = await _studentService.GetAllStudentsWithAddressesAsync();
+
+            if (students == null || !students.Any())
+            {
+                return NotFound(new
+                {
+                    Message = "No students found."
+                });
+            }
+
+            return Ok(students);
         }
     }
 }
