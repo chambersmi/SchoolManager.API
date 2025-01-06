@@ -28,6 +28,11 @@ namespace SchoolManager.API.Services.Repositories
 
         public async Task<IEnumerable<Student>> GetAllStudentsAsync()
         {
+            return await _context.Students.ToListAsync();
+        }
+
+        public async Task<IEnumerable<Student>> GetAllStudentsWithAddressAsync()
+        {
             return await _context.Students.Include(a => a.Addresses).ToListAsync();
         }
 
@@ -64,6 +69,18 @@ namespace SchoolManager.API.Services.Repositories
             }
 
             return null;
+        }
+
+        public async Task JoinStudentToAddressAsync(int studentId, int addressId)
+        {
+            var student = await _context.Students.FindAsync(studentId);
+            var address = await _context.Addresses.FindAsync(addressId);
+
+            if(student != null && address != null)
+            {
+                student.Addresses.Add(address);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

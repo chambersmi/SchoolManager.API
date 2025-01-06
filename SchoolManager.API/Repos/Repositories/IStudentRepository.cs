@@ -1,4 +1,5 @@
 ﻿using SchoolManager.API.Models.DomainModels;
+using SchoolManager.API.Models.DTOs;
 
 namespace SchoolManager.API.Services.Repositories
 {
@@ -9,5 +10,6 @@ namespace SchoolManager.API.Services.Repositories
         Task<Student?> GetStudentByIdAsync(int id);
         Task<Student?> UpdateAsync(Student student);
         Task<bool> DeleteStudentByIdAsync(int id);
+        Task JoinStudentToAddressAsync(int studentId, int addressId);
     }
 }

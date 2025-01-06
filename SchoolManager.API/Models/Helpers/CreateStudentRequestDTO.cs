@@ -1,4 +1,5 @@
 ﻿using SchoolManager.API.Models.DomainModels;
+using SchoolManager.API.Models.DTOs;
 
 namespace SchoolManager.API.Models.Helpers
 {
@@ -10,6 +11,6 @@ namespace SchoolManager.API.Models.Helpers
         public string? LastName { get; set; }
         public DateTime Birthdate { get; set; }
         public string? SSN { get; set; }
-        public List<CreateAddressRequestDTO>? Addresses { get; set; }
+        public AddressDTO Address { get; set; }
     }
 }

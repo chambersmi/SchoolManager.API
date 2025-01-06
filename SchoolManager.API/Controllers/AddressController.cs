@@ -22,7 +22,7 @@ namespace SchoolManager.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAddressAsync()
         {
-            var addresses = await _addressRepository.GetAllAsync();
+            var addresses = await _addressRepository.GetAllAddressesAsync();
 
             var response = new List<AddressDTO>();
 
@@ -56,7 +56,7 @@ namespace SchoolManager.API.Controllers
                     ZipCode = request?.ZipCode                    
                 };
 
-                await _addressRepository.CreateAsync(address);
+                await _addressRepository.AddAddressAsync(address);
 
                 var response = new AddressDTO
                 {

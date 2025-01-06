@@ -10,6 +10,6 @@ namespace SchoolManager.API.Models.DTOs
         public string? LastName { get; set; }
         public DateTime Birthdate { get; set; }
         public string? SSN { get; set; }
-        public List<AddressDTO> Addresses { get; set; } = new List<AddressDTO>();
+        //public List<AddressDTO> Addresses { get; set; } = new List<AddressDTO>();
     }
 }

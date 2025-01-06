@@ -9,15 +9,13 @@ namespace SchoolManager.API.Services
     public class StudentService : IStudentService
     {
         private readonly IStudentRepository _studentRepository;
-        private readonly IAddressRepository _addressRepository;
 
-        public StudentService(IStudentRepository studentRepository, IAddressRepository addressRepository)
+        public StudentService(IStudentRepository studentRepository)
         {
             _studentRepository = studentRepository;
-            _addressRepository = addressRepository;
         }
 
-        public async Task<int> AddStudentAsync(CreateStudentRequestDTO dto)
+        public async Task<int> AddStudentAsync(StudentDTO dto)
         {
             var student = new Student
             {
@@ -27,7 +25,7 @@ namespace SchoolManager.API.Services
                 Birthdate = dto.Birthdate,
                 SSN = dto.SSN
             };
-
+            
             await _studentRepository.AddStudentAsync(student);
             return student.StudentID;
         }
@@ -43,15 +41,7 @@ namespace SchoolManager.API.Services
                 MiddleName = student.MiddleName,
                 LastName = student.LastName,
                 SSN = student.SSN,
-                Birthdate = student.Birthdate,
-                Addresses = student.Addresses.Select(address => new AddressDTO
-                {
-                    Street1 = address.Street1,
-                    Street2 = address.Street2,
-                    City = address.City,
-                    State = address.State,
-                    ZipCode = address.ZipCode
-                }).ToList()
+                Birthdate = student.Birthdate                
             }).ToList();
         }
 
@@ -68,15 +58,7 @@ namespace SchoolManager.API.Services
                     MiddleName = student.MiddleName,
                     LastName = student.LastName,
                     Birthdate = student.Birthdate,
-                    SSN = student.SSN,
-                    Addresses = student.Addresses.Select(address => new AddressDTO
-                    {
-                        Street1 = address.Street1,
-                        Street2 = address.Street2,
-                        City = address.City,
-                        State = address.State,
-                        ZipCode = address.ZipCode
-                    }).ToList()
+                    SSN = student.SSN,                    
                 };
             } else
             {
@@ -88,8 +70,6 @@ namespace SchoolManager.API.Services
         {
             return await _studentRepository.DeleteStudentByIdAsync(id);
         }
-        
 
-        //link student to address?
     }
 }

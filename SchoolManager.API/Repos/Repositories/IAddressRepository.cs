@@ -5,9 +5,10 @@ namespace SchoolManager.API.Services.Repositories
 {
     public interface IAddressRepository
     {
-        Task<Address> CreateAsync(Address address);
-        Task<IEnumerable<Address>> GetAllAsync();
-        Task<Address?> GetByIdAsync(int id);
+        Task<Address> AddAddressAsync(Address address);
+        Task<IEnumerable<Address>> GetAllAddressesAsync();
+        Task<Address?> GetAddressByIdAsync(int id);
+        Task<bool> DeleteAddressByIdAsync(int id);
 
     }
 }

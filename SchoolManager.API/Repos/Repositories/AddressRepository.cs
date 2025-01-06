@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SchoolManager.API.Data;
 using SchoolManager.API.Models.DomainModels;
+using System.Reflection.Metadata.Ecma335;
 
 namespace SchoolManager.API.Services.Repositories
 {
@@ -13,7 +14,7 @@ namespace SchoolManager.API.Services.Repositories
             _context = context;
         }
 
-        public async Task<Address> CreateAsync(Address address)
+        public async Task<Address> AddAddressAsync(Address address)
         {
             if(address == null)
             {
@@ -26,14 +27,29 @@ namespace SchoolManager.API.Services.Repositories
             return address;
         }
 
-        public async Task<IEnumerable<Address>> GetAllAsync()
+        public async Task<IEnumerable<Address>> GetAllAddressesAsync()
         {
             return await _context.Addresses.ToListAsync();
         }
 
-        public async Task<Address?> GetByIdAsync(int id)
+        public async Task<Address?> GetAddressByIdAsync(int id)
         {
             return await _context.Addresses.FirstOrDefaultAsync(x => x.AddressID == id);
+        }
+
+        public async Task<bool> DeleteAddressByIdAsync(int id)
+        {
+            var address = await _context.Addresses.FirstOrDefaultAsync(a => a.AddressID == id);
+
+            if(address == null)
+            {
+                return false;
+            }
+
+            _context.Remove(address);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
 
     }

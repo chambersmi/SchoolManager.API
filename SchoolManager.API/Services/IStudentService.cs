@@ -5,9 +5,9 @@ namespace SchoolManager.API.Services
 {
     public interface IStudentService
     {
-        Task<int> AddStudentAsync(CreateStudentRequestDTO dto);
+        Task<int> AddStudentAsync(StudentDTO dto);
         Task<IEnumerable<StudentDTO>> GetAllStudentsAsync();
         Task<StudentDTO> GetStudentByIdAsync(int id);
-        Task<bool> DeleteStudentByIdAsync(int id);
+        Task<bool> DeleteStudentByIdAsync(int id);        
     }
 }

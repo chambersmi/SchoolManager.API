@@ -6,6 +6,7 @@ using SchoolManager.API.Models.DTOs;
 using SchoolManager.API.Models.Helpers;
 using SchoolManager.API.Services;
 using SchoolManager.API.Services.Repositories;
+using System.Net;
 
 namespace SchoolManager.API.Controllers
 {
@@ -14,13 +15,13 @@ namespace SchoolManager.API.Controllers
     public class StudentController : Controller
     {
         private readonly IStudentService _studentService;
-        private readonly IAddressRepository _addressRepository;
+        private readonly IAddressService _addressService;
         private readonly ILogger<StudentController> _logger;
 
-        public StudentController(IStudentService studentService, IAddressRepository addressRepository, ILogger<StudentController> logger)
+        public StudentController(IStudentService studentService, IAddressService addressService, ILogger<StudentController> logger)
         {
             _studentService = studentService;
-            _addressRepository = addressRepository;
+            _addressService = addressService;
             _logger = logger;
         }
 
@@ -33,7 +34,7 @@ namespace SchoolManager.API.Controllers
 
         // change create studentdto?
         [HttpPost]
-        public async Task<IActionResult> AddStudentAsync([FromBody] CreateStudentRequestDTO request)
+        public async Task<IActionResult> AddStudentAsync([FromBody] StudentDTO request)
         {
            if(request == null)
            {
@@ -81,6 +82,39 @@ namespace SchoolManager.API.Controllers
         {
             var student = await _studentService.DeleteStudentByIdAsync(id);
             return Ok(student);
+        }
+
+        [HttpPost]
+        [Route("CreateStudentWithAddress")]
+        public async Task<IActionResult> CreateStudentWithAddressAsync([FromBody] CreateStudentRequestDTO request)
+        {
+            var address = new AddressDTO
+            {
+                Street1 = request.Address.Street1,
+                Street2 = request.Address.Street2,
+                City = request.Address.City,
+                State = request.Address.State,
+                ZipCode = request.Address.ZipCode
+            };
+
+            var addressId = await _addressService.AddAddressAsync(address);
+
+            var student = new StudentDTO
+            {
+                FirstName = request.FirstName,
+                MiddleName = request.MiddleName,
+                LastName = request.LastName,
+                Birthdate = request.Birthdate,
+                SSN = request.SSN
+            };
+
+            var studentId = _studentService.AddStudentAsync(student);
+
+            return Ok(new
+            {
+                StudentID = studentId,
+                AddressID = addressId
+            });
         }
     }
 }
