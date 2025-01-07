@@ -8,9 +8,12 @@ namespace SchoolManager.API.Services
     public class AddressService : IAddressService
     {
         private readonly IAddressRepository _addressRepository;
-        public AddressService(IAddressRepository addressRepository)
+        private readonly ILogger<AddressService> _logger;
+
+        public AddressService(IAddressRepository addressRepository, ILogger<AddressService> logger)
         {
             _addressRepository = addressRepository;
+            _logger = logger;
         }
 
         public async Task<int> AddAddressAsync(CreateAddressRequestDTO dto)
@@ -84,7 +87,7 @@ namespace SchoolManager.API.Services
                 State = request.State,
                 ZipCode = request.ZipCode
             };
-
+            
             return await _addressRepository.AddAddressAsync(createAddress);
         }
     }

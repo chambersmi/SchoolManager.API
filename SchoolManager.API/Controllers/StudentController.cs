@@ -17,7 +17,6 @@ namespace SchoolManager.API.Controllers
     {
         private readonly IStudentService _studentService;
         private readonly IAddressService _addressService;
-
         private readonly ILogger<StudentController> _logger;
 
         public StudentController(IStudentService studentService, IAddressService addressService, ILogger<StudentController> logger)
@@ -119,7 +118,7 @@ namespace SchoolManager.API.Controllers
             }
 
             await _studentService.AddStudentWithAddressAsync(
-                new StudentDTO
+                new CreateStudentRequestDTO
                 {
                     FirstName = request.FirstName,
                     MiddleName = request.MiddleName,
@@ -127,7 +126,7 @@ namespace SchoolManager.API.Controllers
                     Birthdate = request.Birthdate,
                     SSN = request.SSN
                 },
-                new AddressDTO
+                new CreateAddressRequestDTO
                 {
                     Street1 = request.Street1,
                     Street2 = request.Street2,
@@ -142,7 +141,7 @@ namespace SchoolManager.API.Controllers
             });
         }
 
-        [HttpGet("StudentsWithAddresses")]
+        [HttpGet("GetAllStudentsWithAddresses")]
         public async Task<IActionResult> GetAllStudentsWithAddresses()
         {
             var students = await _studentService.GetAllStudentsWithAddressesAsync();

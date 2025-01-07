@@ -6,10 +6,12 @@ namespace SchoolManager.API.Repos.Repositories
     public class StudentWithAddressRepository : IStudentWithAddressRepository
     {
         private readonly AppDbContext _context;
+        private readonly ILogger<StudentWithAddressRepository> _logger;
 
-        public StudentWithAddressRepository(AppDbContext context)
+        public StudentWithAddressRepository(AppDbContext context, ILogger<StudentWithAddressRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task AddStudentWithAddressAsync(StudentAddress studentAddress)

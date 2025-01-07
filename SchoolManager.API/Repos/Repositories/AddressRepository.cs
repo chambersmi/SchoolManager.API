@@ -10,10 +10,12 @@ namespace SchoolManager.API.Services.Repositories
     public class AddressRepository : IAddressRepository
     {
         private readonly AppDbContext _context;
+        private readonly ILogger<AddressRepository> _logger;
 
-        public AddressRepository(AppDbContext context)
+        public AddressRepository(AppDbContext context, ILogger<AddressRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<Address> AddAddressAsync(Address address)

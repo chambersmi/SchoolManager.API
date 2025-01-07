@@ -12,12 +12,19 @@ namespace SchoolManager.API.Services
         private readonly IStudentRepository _studentRepository;
         private readonly IStudentWithAddressRepository _studentAddressRepository;
         private readonly IAddressService _addressService;
+        private readonly ILogger<StudentService> _logger;
 
-        public StudentService(IStudentRepository studentRepository, IStudentWithAddressRepository studentAddressRepository, IAddressService addressService)
+        public StudentService(
+            IStudentRepository studentRepository, 
+            IStudentWithAddressRepository studentAddressRepository, 
+            IAddressService addressService,
+            ILogger<StudentService> logger
+            )
         {
             _studentRepository = studentRepository;
             _studentAddressRepository = studentAddressRepository;
             _addressService = addressService;
+            _logger = logger;
         }
 
         public async Task<int> AddStudentAsync(CreateStudentRequestDTO dto)
@@ -88,8 +95,8 @@ namespace SchoolManager.API.Services
             };
 
             // Add student
-            await _studentRepository.AddStudentAsync(student);
-
+            var worked = await _studentRepository.AddStudentAsync(student);
+            
             // Add address
             var address = await _addressService.GetOrCreateAddressAsync(addressDTO);
 
