@@ -2,7 +2,7 @@
 using SchoolManager.API.Models.DomainModels;
 using SchoolManager.API.Models.DTOs;
 using SchoolManager.API.Models.Helpers;
-using SchoolManager.API.Services.Repositories;
+using SchoolManager.API.Repos.Repositories.Addresses;
 
 namespace SchoolManager.API.Controllers
 {

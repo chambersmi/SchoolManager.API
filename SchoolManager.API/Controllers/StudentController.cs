@@ -1,12 +1,7 @@
-﻿using Azure;
-using Microsoft.AspNetCore.Hosting.Server.Features;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using SchoolManager.API.Models.DomainModels;
-using SchoolManager.API.Models.DTOs;
+﻿using Microsoft.AspNetCore.Mvc;
 using SchoolManager.API.Models.Helpers;
 using SchoolManager.API.Services;
-using SchoolManager.API.Services.Repositories;
+
 using System.Net;
 
 namespace SchoolManager.API.Controllers

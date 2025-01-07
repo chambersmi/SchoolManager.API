@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SchoolManager.API.Data;
 using SchoolManager.API.Models.DomainModels;
 
-namespace SchoolManager.API.Services.Repositories
+namespace SchoolManager.API.Repos.Repositories.Students
 {
     public class StudentRepository : IStudentRepository
     {
@@ -18,7 +18,7 @@ namespace SchoolManager.API.Services.Repositories
 
         public async Task<Student> AddStudentAsync(Student student)
         {
-            if(student == null)
+            if (student == null)
             {
                 throw new ArgumentNullException(nameof(Student), "Student cannot be found");
             }
@@ -37,7 +37,7 @@ namespace SchoolManager.API.Services.Repositories
         {
             var studentsWithAddresses = await _context.Students.Include(s => s.StudentAddresses).ThenInclude(sa => sa.Address).ToListAsync();
 
-            if(studentsWithAddresses == null)
+            if (studentsWithAddresses == null)
             {
                 return Enumerable.Empty<Student>();
             }
@@ -58,18 +58,18 @@ namespace SchoolManager.API.Services.Repositories
                 .ThenInclude(sa => sa.Address)     // Then include the related Address
                 .FirstOrDefaultAsync(s => s.StudentID == studentId); // Filter by student ID
 
-            if(student == null)
+            if (student == null)
             {
                 return false;
             }
 
             // Remove all StudentAddresses entries and associated addresses
-            foreach(var studentAddress in student.StudentAddresses)
+            foreach (var studentAddress in student.StudentAddresses)
             {
                 var isAddressUsedByOthers = await _context.StudentAddresses.AnyAsync(sa => sa.AddressID == studentAddress.AddressID && sa.StudentID != studentId);
 
                 //Is this needed?
-                if(!isAddressUsedByOthers && studentAddress.Address != null)
+                if (!isAddressUsedByOthers && studentAddress.Address != null)
                 {
                     _context.Addresses.Remove(studentAddress.Address);
                 }
@@ -79,7 +79,7 @@ namespace SchoolManager.API.Services.Repositories
 
             _context.Students.Remove(student);
             await _context.SaveChangesAsync();
-            
+
             return true;
         }
 

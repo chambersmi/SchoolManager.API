@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolManager.API.Data;
-using SchoolManager.API.Repos.Repositories;
+using SchoolManager.API.Repos.Repositories.Addresses;
+using SchoolManager.API.Repos.Repositories.Students;
 using SchoolManager.API.Services;
-using SchoolManager.API.Services.Repositories;
 
 namespace SchoolManager.API
 {

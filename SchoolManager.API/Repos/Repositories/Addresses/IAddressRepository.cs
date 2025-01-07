@@ -2,7 +2,7 @@
 using SchoolManager.API.Models.DomainModels;
 using SchoolManager.API.Models.Helpers;
 
-namespace SchoolManager.API.Services.Repositories
+namespace SchoolManager.API.Repos.Repositories.Addresses
 {
     public interface IAddressRepository
     {

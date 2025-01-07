@@ -5,7 +5,7 @@ using SchoolManager.API.Models.DTOs;
 using SchoolManager.API.Models.Helpers;
 using System.Reflection.Metadata.Ecma335;
 
-namespace SchoolManager.API.Services.Repositories
+namespace SchoolManager.API.Repos.Repositories.Addresses
 {
     public class AddressRepository : IAddressRepository
     {
@@ -20,7 +20,7 @@ namespace SchoolManager.API.Services.Repositories
 
         public async Task<Address> AddAddressAsync(Address address)
         {
-            if(address == null)
+            if (address == null)
             {
                 throw new ArgumentNullException(nameof(address), "Address cannot be null.");
             }
@@ -45,7 +45,7 @@ namespace SchoolManager.API.Services.Repositories
         {
             var address = await _context.Addresses.FirstOrDefaultAsync(a => a.AddressID == id);
 
-            if(address == null)
+            if (address == null)
             {
                 return false;
             }

@@ -1,7 +1,7 @@
 ﻿using SchoolManager.API.Data;
 using SchoolManager.API.Models.DomainModels;
 
-namespace SchoolManager.API.Repos.Repositories
+namespace SchoolManager.API.Repos.Repositories.Students
 {
     public class StudentWithAddressRepository : IStudentWithAddressRepository
     {

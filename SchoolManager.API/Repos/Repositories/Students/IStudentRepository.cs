@@ -1,7 +1,7 @@
 ﻿using SchoolManager.API.Models.DomainModels;
 using SchoolManager.API.Models.DTOs;
 
-namespace SchoolManager.API.Services.Repositories
+namespace SchoolManager.API.Repos.Repositories.Students
 {
     public interface IStudentRepository
     {
